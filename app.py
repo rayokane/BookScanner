@@ -1,36 +1,24 @@
 import streamlit as st
 
-def fetch_amazon_reviews(isbn):
-    # Placeholder function - replace with actual API calls or scraping logic
+def fetch_book_info(isbn):
+    # Placeholder function - replace with actual API calls or data fetching logic
     return {
-        "rating": 4.5,
-        "reviews": ["Great book!", "Loved it!", "Highly recommended."]
+        "title": "Example Book Title",
+        "author": "John Doe",
+        "publisher": "Example Publisher"
     }
 
-def fetch_goodreads_reviews(isbn):
-    # Placeholder function - replace with actual API calls or scraping logic
-    return {
-        "rating": 4.2,
-        "reviews": ["Informative read.", "Engaging and well-written."]
-    }
-
-st.title('ISBN Reviews and Ratings')
-st.write('Enter an ISBN to get reviews and ratings from Amazon and Goodreads.')
+st.title('Book Information by ISBN')
+st.write('Enter an ISBN to get the title, author, and publisher of the book.')
 
 isbn = st.text_input('Enter ISBN', '')
 
 if isbn:
     st.write(f'ISBN entered: {isbn}')
     
-    amazon_data = fetch_amazon_reviews(isbn)
-    goodreads_data = fetch_goodreads_reviews(isbn)
+    book_info = fetch_book_info(isbn)
 
-    st.subheader('Amazon Reviews')
-    st.write(f"Rating: {amazon_data['rating']}")
-    for review in amazon_data['reviews']:
-        st.write(f"- {review}")
-
-    st.subheader('Goodreads Reviews')
-    st.write(f"Rating: {goodreads_data['rating']}")
-    for review in goodreads_data['reviews']:
-        st.write(f"- {review}")
+    st.subheader('Book Information')
+    st.write(f"**Title:** {book_info['title']}")
+    st.write(f"**Author:** {book_info['author']}")
+    st.write(f"**Publisher:** {book_info['publisher']}")
