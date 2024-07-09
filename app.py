@@ -1,12 +1,5 @@
 import streamlit as st
-
-def fetch_book_info(isbn):
-    # Placeholder function - replace with actual API calls or data fetching logic
-    return {
-        "title": "Example Book Title",
-        "author": "John Doe",
-        "publisher": "Example Publisher"
-    }
+from utils import fetch_book_info
 
 st.title('Book Information by ISBN')
 st.write('Enter an ISBN to get the title, author, and publisher of the book.')
