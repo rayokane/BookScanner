@@ -1,5 +1,6 @@
-streamlit 
-streamlit-webrtc 
-pyzbar 
-Pillow
-numpy
+streamlit==1.13.0
+streamlit-webrtc==0.36.0
+pyzbar==0.1.8
+Pillow==9.2.0
+numpy==1.23.1
+opencv-python-headless==4.6.0.66  # Only include if you still want to use OpenCV, otherwise, you can remove this line.
