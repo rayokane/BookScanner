@@ -1,6 +1,7 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
-import cv2
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+from pyzbar.pyzbar import decode
+from PIL import Image
 import numpy as np
 
 st.title('ISBN Reviews and Ratings')
@@ -9,16 +10,39 @@ st.write('Enter or scan an ISBN to get reviews and ratings from Amazon and Goodr
 isbn = st.text_input('Enter ISBN', '')
 
 st.write("Or scan ISBN using your camera:")
-if st.button('Scan ISBN'):
-    webrtc_ctx = webrtc_streamer(key="example")
-    if webrtc_ctx.video_receiver:
-        frame = webrtc_ctx.video_receiver.get_frame()
-        if frame:
-            # Here we would process the frame to extract ISBN
-            # For simplicity, we assume ISBN is found (dummy example)
-            scanned_isbn = "9783161484100"  # Example ISBN
-            isbn = scanned_isbn
-            st.write(f'Scanned ISBN: {isbn}')
+
+class BarcodeScanner(VideoTransformerBase):
+    def transform(self, frame):
+        image = frame.to_image()
+        image = image.convert('RGB')  # Ensure the image is in RGB format
+
+        # Decode the barcodes in the image
+        barcodes = decode(image)
+        for barcode in barcodes:
+            barcode_data = barcode.data.decode('utf-8')
+            (x, y, w, h) = barcode.rect
+            # Draw rectangle around the barcode
+            image = np.array(image)
+            image = Image.fromarray(image)
+            draw = ImageDraw.Draw(image)
+            draw.rectangle([(x, y), (x + w, y + h)], outline="green", width=2)
+            draw.text((x, y - 10), barcode_data, fill="green")
+
+            # Update the scanned ISBN
+            st.session_state.scanned_isbn = barcode_data
+
+        return np.array(image)
+
+webrtc_ctx = webrtc_streamer(key="example", video_transformer_factory=BarcodeScanner)
+
+if 'scanned_isbn' not in st.session_state:
+    st.session_state.scanned_isbn = ''
+
+if webrtc_ctx.video_receiver:
+    st.write(f'Scanned ISBN: {st.session_state.scanned_isbn}')
+
+if st.session_state.scanned_isbn:
+    isbn = st.session_state.scanned_isbn
 
 if isbn:
     st.write(f'ISBN entered: {isbn}')
